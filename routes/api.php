@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\AttachController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ComplainController;
 use App\Http\Controllers\JobController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -33,6 +35,12 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::resource('job', JobController::class);
     Route::resource('category', CategoryController::class);
+    Route::resource('complain', ComplainController::class);
+
+    Route::post('/attach', [AttachController::class, 'upload']);
+    Route::get('/attach/{id}', [AttachController::class, 'preview']);
+    Route::get('/attach/{id}/info', [AttachController::class, 'show']);
+    Route::get('/attaches', [AttachController::class, 'index']);
 });
 
 

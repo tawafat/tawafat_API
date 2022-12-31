@@ -54,7 +54,8 @@ class JobController extends Controller
             'category',
             'assigned_to',
             'updated_by',
-            'created_by'])->find($id);
+            'created_by',
+            'complains'])->find($id);
     }
 
 

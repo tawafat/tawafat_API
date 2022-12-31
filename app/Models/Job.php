@@ -47,4 +47,8 @@ class Job extends Model
     {
         return $this->belongsTo(User::class, 'updated_by_id');
     }
+    public function complains()
+    {
+        return $this->hasMany(Complain::class )->with('created_by');
+    }
 }

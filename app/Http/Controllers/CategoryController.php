@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use App\Models\Job;
 use Illuminate\Http\Request;
+use PDOException;
 
 class CategoryController extends Controller
 {
@@ -22,7 +22,11 @@ class CategoryController extends Controller
             'slug' => 'required',
             'description' => 'nullable'
         ]);
-        return Category::create($request->all());
+        try {
+            return Category::create($request->all());
+        } catch (PDOException $e) {
+            return response(["message" => implode(", ", $e->errorInfo)], 500);
+        }
     }
 
 
