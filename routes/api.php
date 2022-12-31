@@ -28,7 +28,7 @@ Route::post('/login', [AuthController::class, 'login']);
 
 
 Route::get('', function () {
-    return ['status' => 'working'];
+    return ['status' => 'working v1.2.1'];
 });
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
