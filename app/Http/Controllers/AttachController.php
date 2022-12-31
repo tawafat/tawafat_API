@@ -41,7 +41,7 @@ class AttachController extends Controller
     {
 
         $file = Attach::find($id);
-        $storagePath = storage_path('app\public\\' . $file['url']);
+        $storagePath = storage_path('app/public/' . $file['url']);
         $file->counter = $file->counter + 1;
         $file->save();
         $file['attachment_url'] = url('api/attach/' . $file['id']);
