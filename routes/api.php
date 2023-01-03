@@ -4,6 +4,7 @@ use App\Http\Controllers\AttachController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ComplainController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -34,6 +35,8 @@ Route::get('', function () {
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/change-password', [AuthController::class, 'changePassword']);
+
     Route::resource('job', JobController::class);
     Route::resource('category', CategoryController::class);
     Route::resource('complain', ComplainController::class);
@@ -44,6 +47,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/attach/{id}', [AttachController::class, 'preview']);
     Route::get('/attach/{id}/info', [AttachController::class, 'show']);
     Route::get('/attaches', [AttachController::class, 'index']);
+
+
+    Route::get('/dashboard', [DashboardController::class, 'index']);
 });
 
 

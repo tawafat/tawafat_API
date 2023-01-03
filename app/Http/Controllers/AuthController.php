@@ -33,6 +33,33 @@ class AuthController extends Controller
     }
 
 
+    public function changePassword(Request $request)
+    {
+
+        $fields = $request->validate([
+            'old_password' => 'required|string',
+            'password' => 'required|string|confirmed',
+        ]);
+
+        $user = User::find( $request->user()->id);
+
+        if(!$user|| !Hash::check($fields['old_password'], $user->password) ){
+            return response(['message'=>'bad credential'], 401);
+        }
+         $user->password = bcrypt($fields['password']);
+        $updatedUser =  $user->save();
+
+        if($updatedUser == 1) {
+            $request->user()->currentAccessToken()->delete();
+
+
+            return response(['message' => 'Password is changed and you are logged out from all devices'], 201);
+        }else {
+            return response(['message' => 'not Changed'], 500);
+
+        }
+    }
+
     public function login(Request $request)
     {
         $fields = $request->validate([
