@@ -10,18 +10,25 @@ class JobController extends Controller
 
     public function index()
     {
-        return Job::with([
+        $jobs = Job::with([
             'location',
             'category',
             'assigned_to',
+            'complains',
             'updated_by',
             'created_by'])->get()->sortByDesc('created_at')->values();
+
+        foreach ($jobs as $job) {
+            $job->complains_counts = count($job->complains);
+            unset($job->complains);
+        }
+        return $jobs;
     }
 
 
     public function store(Request $request)
     {
-       $user =  $request->user();
+        $user = $request->user();
         $request->validate([
             'name' => 'required|max:25',
             'description' => 'required',
@@ -39,11 +46,11 @@ class JobController extends Controller
         $data = $request->all();
         $data['updated_by_id'] = $user->id;
         $data['created_by_id'] = $user->id;
-        $job =  Job::create($data);
+        $job = Job::create($data);
         $location = $job->location()->create($request->get('location'));
         $job->location_id = $location->id;
         $job->save();
-        return  $job;
+        return $job;
     }
 
 
@@ -61,7 +68,7 @@ class JobController extends Controller
 
     public function update(Request $request, $id)
     {
-        $user =  $request->user();
+        $user = $request->user();
         $job = Job::find($id);
         $data = $request->all();
         $data['updated_by_id'] = $user->id;
@@ -73,11 +80,11 @@ class JobController extends Controller
 
     public function destroy($id)
     {
-        $response =  Job::destroy($id);
-        if($response){
-            return response( ['message'=> 'Deleted Successfully'], 200);
-        } else{
-            return response( ['message'=> 'Not Found'], 404);
+        $response = Job::destroy($id);
+        if ($response) {
+            return response(['message' => 'Deleted Successfully'], 200);
+        } else {
+            return response(['message' => 'Not Found'], 404);
         }
     }
 }
