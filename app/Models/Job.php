@@ -14,6 +14,7 @@ class Job extends Model
         'description',
         'start_date',
         'end_date',
+        'radius',
         'status',
         'location_id',
         'category_slug',

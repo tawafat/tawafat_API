@@ -14,6 +14,12 @@ class UserController extends Controller
     }
 
 
+    public function show($id)
+    {
+        return User::with('role')->find($id);
+    }
+
+
     public function store(Request $request)
     {
         $fields = $request->validate([
@@ -34,12 +40,6 @@ class UserController extends Controller
         ];
 
         return response($response, 201);
-    }
-
-
-    public function show($id)
-    {
-        return User::find($id);
     }
 
 
