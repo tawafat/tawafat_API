@@ -62,7 +62,7 @@ class JobController extends Controller
             'FromEmail' => "hazem.xmotion@gmail.com",
             'FromName' => "Mailjet Pilot",
             'Subject' => "Your email flight plan!",
-            'MJ-TemplateID' => 1,
+            'MJ-TemplateID' => 4480674,
             'MJ-TemplateLanguage' => true,
             'Recipients' => [['Email' => "striker.h@gmail.com"]]
         ];
