@@ -46,11 +46,20 @@ class UserController extends Controller
         $body = [
             'FromEmail' => "hazem.xmotion@gmail.com",
             'FromName' => "Hazem Tawafat",
-            'Subject' => "Welcome ".$fields['name'] .",
-             An account is been Created on Tawafat,
+            'Subject' => "An account is been Created at Tawafat",
+            'Text-part' => "Welcome ".$fields['name'] .",
+             An account is been Created at Tawafat,
              your Credential is:
              user: ".$fields['name'] ." , Password: ".$fields['password']."
              ",
+            'Html-part' => "
+                    <h3>Welcome ".$fields['name'] ."!</h3>
+                    <br />An account is been Created at Tawafat,
+                    <br /> your Credential is:
+                    <br />  user: ".$fields['name'] ."
+                    <br /> Password: ".$fields['password']."
+                    ",
+
 
             'Recipients' => [['Email' =>  $fields['email']]]
         ];
