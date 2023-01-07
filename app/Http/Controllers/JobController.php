@@ -59,7 +59,7 @@ class JobController extends Controller
 
         $mj = Mailjet::getClient();
         $body = [
-            'FromEmail' => "pilot@mailjet.com",
+            'FromEmail' => "hazem.xmotion@gmail.com",
             'FromName' => "Mailjet Pilot",
             'Subject' => "Your email flight plan!",
             'MJ-TemplateID' => 1,
@@ -67,7 +67,7 @@ class JobController extends Controller
             'Recipients' => [['Email' => "striker.h@gmail.com"]]
         ];
         $response = Mailjet::post(Resources::$Email, ['body' => $body]);
-        $response->success() && var_dump($response->getData());
+//        $response->success() && var_dump($response->getData());
         return $job;
     }
 

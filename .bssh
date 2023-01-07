@@ -6,3 +6,4 @@ git pull
 php artisan migrate
 php artisan storage:link
 
+composer install
