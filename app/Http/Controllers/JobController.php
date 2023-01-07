@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Job;
+use Mailjet\LaravelMailjet\Facades\Mailjet;
+use Mailjet\Resources;
 
 class JobController extends Controller
 {
@@ -50,6 +52,22 @@ class JobController extends Controller
         $location = $job->location()->create($request->get('location'));
         $job->location_id = $location->id;
         $job->save();
+
+        $resource = [
+
+        ];
+
+        $mj = Mailjet::getClient();
+        $body = [
+            'FromEmail' => "pilot@mailjet.com",
+            'FromName' => "Mailjet Pilot",
+            'Subject' => "Your email flight plan!",
+            'MJ-TemplateID' => 1,
+            'MJ-TemplateLanguage' => true,
+            'Recipients' => [['Email' => "striker.h@gmail.com"]]
+        ];
+        $response = Mailjet::post(Resources::$Email, ['body' => $body]);
+        $response->success() && var_dump($response->getData());
         return $job;
     }
 
