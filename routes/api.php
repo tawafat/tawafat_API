@@ -44,14 +44,14 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
 
     Route::post('/attach', [AttachController::class, 'upload']);
-    Route::get('/attach/{id}', [AttachController::class, 'preview']);
+
     Route::get('/attach/{id}/info', [AttachController::class, 'show']);
     Route::get('/attaches', [AttachController::class, 'index']);
 
 
     Route::get('/dashboard', [DashboardController::class, 'index']);
 });
-
+Route::get('/attach/{id}', [AttachController::class, 'preview']);
 
 /*Route::get('/jobs', [JobController::class, 'index']);
 Route::post('/job', [JobController::class, 'store']);
