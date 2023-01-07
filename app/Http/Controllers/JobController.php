@@ -53,20 +53,6 @@ class JobController extends Controller
         $job->location_id = $location->id;
         $job->save();
 
-        $resource = [
-
-        ];
-
-        $mj = Mailjet::getClient();
-        $body = [
-            'FromEmail' => "hazem.xmotion@gmail.com",
-            'FromName' => "Mailjet Pilot",
-            'Subject' => "Your email flight plan!11",
-
-            'Recipients' => [['Email' => "striker.h@gmail.com"]]
-        ];
-        $response = Mailjet::post(Resources::$Email, ['body' => $body]);
-//        $response->success() && var_dump($response->getData());
         return $job;
     }
 

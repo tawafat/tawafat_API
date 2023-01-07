@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Mailjet\LaravelMailjet\Facades\Mailjet;
+use Mailjet\Resources;
 
 class UserController extends Controller
 {
@@ -38,6 +40,21 @@ class UserController extends Controller
             'user' => $user,
             'token' => $token
         ];
+
+
+
+        $body = [
+            'FromEmail' => "hazem.xmotion@gmail.com",
+            'FromName' => "Hazem Tawafat",
+            'Subject' => "Welcome ".$fields['name'] .",
+             An account is been Created on Tawafat,
+             your Credential is:
+             user: ".$fields['name'] ." , Password: ".$fields['password']."
+             ",
+
+            'Recipients' => [['Email' =>  $fields['email']]]
+        ];
+         Mailjet::post(Resources::$Email, ['body' => $body]);
 
         return response($response, 201);
     }
