@@ -61,7 +61,7 @@ class JobController extends Controller
         $body = [
             'FromEmail' => "hazem.xmotion@gmail.com",
             'FromName' => "Mailjet Pilot",
-            'Subject' => "Your email flight plan!",
+            'Subject' => "Your email flight plan!11",
 
             'Recipients' => [['Email' => "striker.h@gmail.com"]]
         ];
