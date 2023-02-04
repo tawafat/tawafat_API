@@ -25,7 +25,7 @@ class AuthController extends Controller
         $token = $user->createToken('myAppToken')->plainTextToken;
 
         $response = [
-            'user'=> $user,
+            'user' => $user,
             'token' => $token
         ];
 
@@ -41,20 +41,20 @@ class AuthController extends Controller
             'password' => 'required|string|confirmed',
         ]);
 
-        $user = User::find( $request->user()->id);
+        $user = User::find($request->user()->id);
 
-        if(!$user|| !Hash::check($fields['old_password'], $user->password) ){
-            return response(['message'=>'bad credential'], 401);
+        if (!$user || !Hash::check($fields['old_password'], $user->password)) {
+            return response(['message' => 'bad credential'], 401);
         }
-         $user->password = bcrypt($fields['password']);
-        $updatedUser =  $user->save();
+        $user->password = bcrypt($fields['password']);
+        $updatedUser = $user->save();
 
-        if($updatedUser == 1) {
+        if ($updatedUser == 1) {
             $request->user()->currentAccessToken()->delete();
 
 
             return response(['message' => 'Password is changed and you are logged out from all devices'], 201);
-        }else {
+        } else {
             return response(['message' => 'not Changed'], 500);
 
         }
@@ -62,19 +62,20 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $fields = $request->validate([
-        'email' => 'required|string',
-        'password' => 'required|string',
-    ]);
 
+        $fields = $request->validate([
+            'email' => 'required|string',
+            'password' => 'required|string',
+        ]);
         $user = User::where('email', $fields['email'])->first();
-        if(!$user|| !Hash::check($fields['password'], $user->password) ){
-            return response(['message'=>'bad credential'], 401);
+        if (!$user || !Hash::check($fields['password'], $user->password)) {
+            return response(['message' => 'bad credential'], 401);
         }
+
         $token = $user->createToken('portal')->plainTextToken;
 
         $response = [
-            'user'=> $user,
+            'user' => $user,
             'token' => $token
         ];
 
@@ -85,6 +86,6 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
-        return response(['message'=> 'logged out'], 201);
+        return response(['message' => 'logged out'], 201);
     }
 }
