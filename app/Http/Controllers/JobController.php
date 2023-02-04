@@ -50,6 +50,24 @@ class JobController extends Controller
         return $jobs;
     }
 
+    public function assignedToMe(Request $request)
+    {
+
+        $user = $request->user();
+        $jobs = Job::with([
+            'location',
+            'category',
+            'complains',
+            'updated_by',
+            'created_by'])->where(['assigned_to_id' => $user->id])->get()->sortByDesc('created_at')->values();
+
+        foreach ($jobs as $job) {
+            $job->complains_counts = count($job->complains);
+            unset($job->complains);
+        }
+        return $jobs ;
+    }
+
 
     /**
      * @OA\Post(
@@ -96,6 +114,7 @@ class JobController extends Controller
             'category_slug' => 'required',
             'assigned_to_id' => 'int|nullable'
         ]);
+
 
         $data = $request->all();
         $data['updated_by_id'] = $user->id;
@@ -207,6 +226,19 @@ class JobController extends Controller
         //
     }
 
+    public function assignTo(Request $request, $id)
+    {
+        $request->validate([
+            'assigned_to_id' => 'int|required'
+        ]);
+
+        $user = $request->user();
+        $job = Job::find($id);
+        $job->updated_by_id =  $user->id;
+        $job->assigned_to_id = $request->assigned_to_id;
+        return $job;
+        //
+    }
     public function startEnd(Request $request, $id)
     {
         $request->validate([

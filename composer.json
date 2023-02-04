@@ -7,6 +7,7 @@
     "require": {
         "php": "^7.3|^8.0",
         "ext-pdo": "*",
+        "andreaselia/laravel-api-to-postman": "^1.14",
         "darkaonline/l5-swagger": "^8.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",

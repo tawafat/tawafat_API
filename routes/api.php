@@ -37,8 +37,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/change-password', [AuthController::class, 'changePassword']);
 
+    Route::get('job/me', [JobController::class, 'assignedToMe']);
+    Route::post('job/{id}/assignTo', [JobController::class, 'assignTo']);
+    Route::post('job/{id}/startEnd', [JobController::class, 'startEnd']);
     Route::resource('job', JobController::class);
-    Route::post('job/{id}/action', [JobController::class, 'startEnd']);
 
     Route::resource('category', CategoryController::class);
     Route::resource('complain', ComplainController::class);
