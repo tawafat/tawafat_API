@@ -6,6 +6,8 @@ use App\Enums\JobStatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+
+
 class Job extends Model
 {
     use HasFactory;
@@ -14,6 +16,8 @@ class Job extends Model
         'description',
         'start_date',
         'end_date',
+        'actual_start_date',
+        'actual_end_date',
         'radius',
         'status',
         'location_id',

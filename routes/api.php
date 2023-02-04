@@ -38,6 +38,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/change-password', [AuthController::class, 'changePassword']);
 
     Route::resource('job', JobController::class);
+    Route::post('job/{id}/action', [JobController::class, 'startEnd']);
+
     Route::resource('category', CategoryController::class);
     Route::resource('complain', ComplainController::class);
     Route::resource('user', UserController::class);
