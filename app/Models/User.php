@@ -24,6 +24,7 @@ class User extends Authenticatable
         'role_id',
     ];
 
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -46,5 +47,10 @@ class User extends Authenticatable
     public function role()
     {
         return $this->belongsTo(Role::class, 'role_id');
+    }
+
+    public function logs()
+    {
+        return $this->morphMany(DataLog::class, 'loggable');
     }
 }

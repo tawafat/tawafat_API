@@ -19,5 +19,8 @@ class Category extends Model
     {
         return $this->hasMany(Job::class, 'category_slug', 'slug');
     }
-
+    public function logs()
+    {
+        return $this->morphMany(DataLog::class, 'loggable');
+    }
 }

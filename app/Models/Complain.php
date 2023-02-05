@@ -28,4 +28,8 @@ class Complain extends Model
     {
         return $this->belongsTo(Attach::class, 'attachment_id');
     }
+    public function logs()
+    {
+        return $this->morphMany(DataLog::class, 'loggable');
+    }
 }

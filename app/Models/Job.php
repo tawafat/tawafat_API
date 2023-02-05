@@ -56,4 +56,9 @@ class Job extends Model
     {
         return $this->hasMany(Complain::class )->with('created_by');
     }
+
+    public function logs()
+    {
+        return $this->morphMany(DataLog::class, 'loggable');
+    }
 }

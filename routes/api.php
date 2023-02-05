@@ -38,6 +38,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/change-password', [AuthController::class, 'changePassword']);
 
     Route::get('job/me', [JobController::class, 'assignedToMe']);
+    Route::get('job/{id}/jobLogs', [JobController::class, 'jobLogs']);
     Route::post('job/{id}/assignTo', [JobController::class, 'assignTo']);
     Route::post('job/{id}/startEnd', [JobController::class, 'startEnd']);
     Route::resource('job', JobController::class);

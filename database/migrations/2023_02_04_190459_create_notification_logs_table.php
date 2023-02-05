@@ -15,6 +15,14 @@ class CreateNotificationLogsTable extends Migration
     {
         Schema::create('notification_logs', function (Blueprint $table) {
             $table->id();
+            $table->integer('to_user');
+            $table->string('type');
+            $table->string('message');
+            $table->boolean('notification_sent');
+            $table->boolean('notification_read');
+            $table->boolean('email_sent');
+//            $table->boolean('sms_sent');
+            $table->integer('log_id');
             $table->timestamps();
         });
     }

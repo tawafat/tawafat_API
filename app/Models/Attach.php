@@ -25,4 +25,9 @@ class Attach extends Model
     {
         return $this->belongsTo(User::class, 'created_by_id');
     }
+
+    public function logs()
+    {
+        return $this->morphMany(DataLog::class, 'loggable');
+    }
 }
