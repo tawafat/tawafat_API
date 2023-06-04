@@ -73,7 +73,7 @@ class Job extends Model
     public function getEnableStudioAttribute($value)
     {
 
-        //test
+        //test 111
         return (bool) $value;
     }
 }
