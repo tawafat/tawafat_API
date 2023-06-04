@@ -1,4 +1,4 @@
-ssh -p 65002 u524135761@145.14.151.231
+ssh -p 65002 u524135761@89.117.139.74
 
 xMotion#5050
 cd domains/xmotion-sa.com/public_html/_tawafat/api

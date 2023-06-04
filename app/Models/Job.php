@@ -26,6 +26,10 @@ class Job extends Model
         'assigned_to_id',
         'created_by_id',
         'updated_by_id',
+
+        'enable_gps',
+        'enable_studio',
+        'type',
         ];
 
  /*   protected $casts = [
@@ -60,5 +64,14 @@ class Job extends Model
     public function logs()
     {
         return $this->morphMany(DataLog::class, 'loggable');
+    }
+
+    public function getEnableGpsAttribute($value)
+    {
+        return (bool) $value;
+    }
+    public function getEnableStudioAttribute($value)
+    {
+        return (bool) $value;
     }
 }

@@ -113,7 +113,9 @@ class JobController extends Controller
             'location.long' => 'required',
             'location.lat' => 'required',
             'category_slug' => 'required',
-            'assigned_to_id' => 'int|nullable'
+            'enable_gps' => 'required',
+            'enable_studio' => 'required',
+            'type' => 'required'
         ]);
 
 
