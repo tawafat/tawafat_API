@@ -551,14 +551,14 @@ class JobController extends Controller
             $jobDetail->update($validatedData);
         } else {
             // Create a new job detail
-
+            die();
 
             $jobDetail = JobDetail::create($validatedData);
             $jobDetail->job_type = $job->type;
             $jobDetail->job_id = "'".$jobId."'";
 
             echo   $jobDetail->job_id;
-            exit();
+
             $jobDetail->save();
 
             // Associate the job detail with the job
