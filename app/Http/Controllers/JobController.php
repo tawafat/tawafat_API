@@ -552,7 +552,7 @@ class JobController extends Controller
         } else {
             // Create a new job detail
 
-            $validatedData->job_id = $jobId;
+            $validatedData['job_id'] = $jobId;
             $jobDetail = JobDetail::create($validatedData);
             die();
             $jobDetail->job_type = $job->type;
