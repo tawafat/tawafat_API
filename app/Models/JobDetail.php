@@ -12,6 +12,7 @@ class JobDetail extends Model
     protected $table = 'job_details';
 
     protected $fillable = [
+        'job_id',
         'job_type',
         'no_of_packages',
         'rejected_packages',
