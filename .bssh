@@ -8,3 +8,8 @@ php artisan migrate
 php artisan storage:link
 
 composer install
+
+
+--------------------------------------
+--- it will uploaded automatically ---
+--------------------------------------

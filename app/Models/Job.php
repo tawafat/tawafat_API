@@ -75,4 +75,9 @@ class Job extends Model
         //test 111
         return (bool) $value;
     }
+
+    public function jobDetail()
+    {
+        return $this->hasOne(JobDetail::class);
+    }
 }

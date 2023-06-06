@@ -41,7 +41,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('job/{id}/jobLogs', [JobController::class, 'jobLogs']);
     Route::post('job/{id}/assignTo', [JobController::class, 'assignTo']);
     Route::post('job/{id}/startEnd', [JobController::class, 'startEnd']);
+    Route::post('job/{id}/storeDetails', [JobController::class, 'storeDetails']);
     Route::resource('job', JobController::class);
+
 
     Route::resource('category', CategoryController::class);
     Route::resource('complain', ComplainController::class);

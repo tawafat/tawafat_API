@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\JobDetail;
 use Exception;
 use Illuminate\Http\Request;
 use App\Models\Job;
@@ -42,7 +43,8 @@ class JobController extends Controller
             'assigned_to',
             'complains',
             'updated_by',
-            'created_by'])->get()->sortByDesc('created_at')->values();
+            'created_by',
+            'jobDetail'])->get()->sortByDesc('created_at')->values();
 
         foreach ($jobs as $job) {
             $job->complains_counts = count($job->complains);
@@ -183,7 +185,8 @@ class JobController extends Controller
             'updated_by',
             'created_by',
             'complains',
-            'logs'])->find($id);
+            'logs',
+            'jobDetail'])->find($id);
     }
 
 
@@ -367,6 +370,12 @@ class JobController extends Controller
         /// end save
 
 
+        // Delete the related JobDetail record
+        $jobDetail = $job->jobDetail;
+        if ($jobDetail) {
+            $jobDetail->delete();
+        }
+
         $response = Job::destroy($id);
         if ($response) {
             return response(['message' => 'Deleted Successfully'], 200);
@@ -386,6 +395,189 @@ class JobController extends Controller
 
            return $job;
        }
+
+
+
+
+    /**
+     * Store the job details for the related job ID.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $jobId
+     *
+     * @return \Illuminate\Http\Response
+     *
+     * @SWG\Post(
+     *     path="/jobs/{jobId}/details",
+     *     summary="Store job details",
+     *     tags={"Job Details"},
+     *     description="Store the job details for the specified job ID.",
+     *     operationId="storeJobDetails",
+     *     consumes={"application/json"},
+     *     produces={"application/json"},
+     *     @SWG\Parameter(
+     *         name="jobId",
+     *         in="path",
+     *         description="ID of the job",
+     *         required=true,
+     *         type="integer",
+     *     ),
+     *     @SWG\Parameter(
+     *         name="body",
+     *         in="body",
+     *         description="Job details to be stored",
+     *         required=true,
+     *         @SWG\Schema(
+     *             @SWG\Property(
+     *                 property="job_type",
+     *                 type="string",
+     *                 description="Type of the job"
+     *             ),
+     *             @SWG\Property(
+     *                 property="no_of_packages",
+     *                 type="integer",
+     *                 description="Number of packages"
+     *             ),
+     *             @SWG\Property(
+     *                 property="rejected_packages",
+     *                 type="integer",
+     *                 description="Number of rejected packages"
+     *             ),
+     *             @SWG\Property(
+     *                 property="min_weight",
+     *                 type="integer",
+     *                 description="Minimum weight"
+     *             ),
+     *             @SWG\Property(
+     *                 property="Date_time",
+     *                 type="string",
+     *                 format="date-time",
+     *                 description="Date and time"
+     *             ),
+     *             @SWG\Property(
+     *                 property="gate_number",
+     *                 type="integer",
+     *                 description="Gate number"
+     *             ),
+     *             @SWG\Property(
+     *                 property="no_entering",
+     *                 type="integer",
+     *                 description="Number of entering"
+     *             ),
+     *             @SWG\Property(
+     *                 property="no_exiting",
+     *                 type="integer",
+     *                 description="Number of exiting"
+     *             ),
+     *             @SWG\Property(
+     *                 property="no_inside",
+     *                 type="integer",
+     *                 description="Number inside"
+     *             ),
+     *             @SWG\Property(
+     *                 property="camp_number",
+     *                 type="integer",
+     *                 description="Camp number"
+     *             ),
+     *             @SWG\Property(
+     *                 property="temperature",
+     *                 type="integer",
+     *                 description="Temperature"
+     *             ),
+     *             @SWG\Property(
+     *                 property="humidity",
+     *                 type="integer",
+     *                 description="Humidity"
+     *             ),
+     *         ),
+     *     ),
+     *     @SWG\Response(
+     *         response=200,
+     *         description="Job details created successfully",
+     *         @SWG\Schema(
+     *             type="object",
+     *             @SWG\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 description="Success message"
+     *             ),
+     *         ),
+     *     ),
+     *     @SWG\Response(
+     *         response=404,
+     *         description="Job not found",
+     *         @SWG\Schema(
+     *             type="object",
+     *             @SWG\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 description="Error message"
+     *             ),
+     *         ),
+     *     ),
+     * )
+     */
+    public function storeDetails(Request $request, $jobId): Response
+    {
+        $validatedData = $request->validate([
+            //'job_type' => 'nullable',
+            'no_of_packages' => 'nullable|numeric',
+            'rejected_packages' => 'nullable|numeric',
+            'min_weight' => 'nullable|numeric',
+            'date_time' => 'nullable|date',
+            'gate_number' => 'nullable|numeric',
+            'no_entering' => 'nullable|numeric',
+            'no_exiting' => 'nullable|numeric',
+            'no_inside' => 'nullable|numeric',
+            'camp_number' => 'nullable|numeric',
+            'temperature' => 'nullable|numeric',
+            'humidity' => 'nullable|numeric',
+        ]);
+
+
+
+
+
+        $job = Job::find($jobId);
+
+        if (!$job) {
+            return response(['message' => 'Job not found'], 404);
+        }
+
+        // Check if a job detail record already exists for the job
+        $jobDetail = JobDetail::where('job_id', $jobId)->first();
+        // If a job detail record exists, update it
+        if ($jobDetail) {
+            $jobDetail->update($validatedData);
+        } else {
+            // Create a new job detail
+
+
+            $jobDetail = JobDetail::create($validatedData);
+            $jobDetail->job_type = $job->type;
+            $jobDetail->job_id = $jobId;
+            $jobDetail->save();
+
+            // Associate the job detail with the job
+
+//            $job->jobDetail()->associate($jobDetail);
+            $job->save();
+        }
+
+
+        // log
+        $metaData = compact('job');
+        $user = $request->user();
+        $log = dataLogController::createLog('save a job details', 'jobDetails', $job->getTable() , $job->id, $user, $metaData, $request);
+        $job->logs()->save($log);
+
+        $jobWithDetail = Job::with('jobDetail')->find($jobId);
+        return response(['message' => 'JobDetails created successfully',
+        'job' => $jobWithDetail], 200);
+
+
+    }
+
 
 
 
