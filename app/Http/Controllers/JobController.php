@@ -35,16 +35,27 @@ class JobController extends Controller
      *      )
      *     )
      **/
-    public function index()
+    public function index($type=null)
     {
-        $jobs = Job::with([
-            'location',
-            'category',
-            'assigned_to',
-            'complains',
-            'updated_by',
-            'created_by',
-            'jobDetail'])->get()->sortByDesc('created_at')->values();
+        if(isset($type)){
+            $jobs = Job::with([
+                'location',
+                'category',
+                'assigned_to',
+                'complains',
+                'updated_by',
+                'created_by',
+                'jobDetail'])->where('type', $type)->get()->sortByDesc('created_at')->values();
+        }else {
+            $jobs = Job::with([
+                'location',
+                'category',
+                'assigned_to',
+                'complains',
+                'updated_by',
+                'created_by',
+                'jobDetail'])->get()->sortByDesc('created_at')->values();
+        }
 
         foreach ($jobs as $job) {
             $job->complains_counts = count($job->complains);
