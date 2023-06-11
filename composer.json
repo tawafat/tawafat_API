@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^7.3|^8.0",
+        "ext-json": "*",
         "ext-pdo": "*",
         "andreaselia/laravel-api-to-postman": "^1.14",
         "darkaonline/l5-swagger": "^8.4",
@@ -13,9 +14,9 @@
         "guzzlehttp/guzzle": "^7.0.1",
         "laravel/framework": "^8.75",
         "laravel/sanctum": "^2.15",
+        "laravel/telescope": "^4.14",
         "laravel/tinker": "^2.5",
-        "mailjet/laravel-mailjet": "^3.0",
-      "ext-json": "*"
+        "mailjet/laravel-mailjet": "^3.0"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
