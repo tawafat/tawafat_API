@@ -23,7 +23,7 @@ class ComplainController extends Controller
         $request->validate([
             'comment' => 'required',
             'attachment_id' => 'nullable|numeric',
-            'attachment_file' => 'nullable|file|mimes:jpg,png,jpeg,gif,svg,mp3,pdf|max:2048',
+            'attachment_file' => 'nullable|file|mimes:jpg,png,jpeg,gif,svg,mp3,pdf|max:40960',
             'attachment_type' => 'string|nullable',
             'job_id' => 'required',
         ]);
