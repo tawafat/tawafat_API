@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\JobDetail;
+//use App\Notifications\JobCreated;
 use Exception;
 use Illuminate\Http\Request;
 use App\Models\Job;
@@ -35,9 +36,9 @@ class JobController extends Controller
      *      )
      *     )
      **/
-    public function index($type=null)
+    public function index($type = null)
     {
-        if(isset($type)){
+        if (isset($type)) {
             $jobs = Job::with([
                 'location',
                 'category',
@@ -46,7 +47,7 @@ class JobController extends Controller
                 'updated_by',
                 'created_by',
                 'jobDetail'])->where('type', $type)->get()->sortByDesc('created_at')->values();
-        }else {
+        } else {
             $jobs = Job::with([
                 'location',
                 'category',
@@ -125,7 +126,7 @@ class JobController extends Controller
             'location' => 'required',
             'location.long' => 'required',
             'location.lat' => 'required',
-           // 'category_slug' => 'required',
+            // 'category_slug' => 'required',
             'enable_gps' => 'required',
             'enable_studio' => 'required',
             'type' => 'required'
@@ -143,9 +144,10 @@ class JobController extends Controller
 
         // save on the log
         $metaData = compact('user', 'job', 'location');
-        $log = dataLogController::createLog('Create a new job', 'update', $job->getTable() , $job->id, $user, $metaData, $request);
+        $log = dataLogController::createLog('Create a new job', 'update', $job->getTable(), $job->id, $user, $metaData, $request);
         $job->logs()->save($log);
 
+//        \Notification::send($user, new JobCreated($log));
 
         return $job;
 
@@ -247,15 +249,21 @@ class JobController extends Controller
         $user = $request->user();
         $job = Job::find($id);
         $job_before = $job->toArray();
+
         $requestData = $request->all();
         $requestData['updated_by_id'] = $user->id;
+
+
         $job->update($requestData);
+
+        if ($request->has('location')) {
+            $job->location->update($request->input('location'));
+        }
 
         // save on the log
         $metaData = compact('user', 'job', 'job_before');
-        $log = dataLogController::createLog('Update a job', 'update', $job->getTable() , $id, $user, $metaData, $request);
+        $log = dataLogController::createLog('Update a job', 'update', $job->getTable(), $id, $user, $metaData, $request);
         $job->logs()->save($log);
-
 
 
         return $job;
@@ -276,7 +284,7 @@ class JobController extends Controller
 
         // save on the log
         $metaData = compact('user', 'job', 'job_before');
-        $log = dataLogController::createLog('Assign a job to a user', 'update', $job->getTable() , $id, $user, $metaData, $request);
+        $log = dataLogController::createLog('Assign a job to a user', 'update', $job->getTable(), $id, $user, $metaData, $request);
         $job->logs()->save($log);
 
 
@@ -314,7 +322,6 @@ class JobController extends Controller
         /// end Validation the Request
 
 
-
         if ($request->action === 'start') {
             $job->actual_start_date = $request->date;
         } else {
@@ -326,7 +333,7 @@ class JobController extends Controller
 
         // save on the log
         $metaData = compact('user', 'job', 'job_before');
-        $log = dataLogController::createLog('set actual start or end date of a job', 'update', $job->getTable() , $id, $user, $metaData, $request);
+        $log = dataLogController::createLog('set actual start or end date of a job', 'update', $job->getTable(), $id, $user, $metaData, $request);
         $job->logs()->save($log);
 
 
@@ -369,14 +376,14 @@ class JobController extends Controller
      *      )
      * )
      */
-    public function destroy(Request $request,$id)
+    public function destroy(Request $request, $id)
     {
         // save on the log
         $user = $request->user();
         $job = Job::find($id);
         $job_before = $job->toArray();
-        $metaData = compact('user',  'job_before');
-        $log = dataLogController::createLog('Delete a job', 'delete', $job->getTable() , $id, $user, $metaData, $request);
+        $metaData = compact('user', 'job_before');
+        $log = dataLogController::createLog('Delete a job', 'delete', $job->getTable(), $id, $user, $metaData, $request);
         $job->logs()->save($log);
         /// end save
 
@@ -396,18 +403,13 @@ class JobController extends Controller
     }
 
 
+    public function jobLogs($id)
+    {
+        $job = Job::with(['logs'])->find($id);
+        $job->logs->makeVisible('data');
 
-
-
-       public function jobLogs($id)
-       {
-           $job = Job::with(['logs'])->find($id);
-           $job->logs->makeVisible('data');
-
-           return $job;
-       }
-
-
+        return $job;
+    }
 
 
     /**
@@ -546,9 +548,6 @@ class JobController extends Controller
         ]);
 
 
-
-
-
         $job = Job::find($jobId);
 
         if (!$job) {
@@ -580,18 +579,15 @@ class JobController extends Controller
         // log
         $metaData = compact('job');
         $user = $request->user();
-        $log = dataLogController::createLog('save a job details', 'jobDetails', $job->getTable() , $job->id, $user, $metaData, $request);
+        $log = dataLogController::createLog('save a job details', 'jobDetails', $job->getTable(), $job->id, $user, $metaData, $request);
         $job->logs()->save($log);
 
         $jobWithDetail = Job::with('jobDetail')->find($jobId);
         return response(['message' => 'JobDetails created successfully',
-        'job' => $jobWithDetail], 200);
+            'job' => $jobWithDetail], 200);
 
 
     }
-
-
-
 
 
 }
