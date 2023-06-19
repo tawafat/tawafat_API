@@ -76,11 +76,11 @@ class AuthController extends Controller
             return response(['message' => 'bad credential'], 401);
         }
 
-        if( $request->header('client-platform') == 'angular' && $user->role_id == Role::IS_MANAGER){
+        if( $request->header('client-platform') == 'mobile' && $user->role_id == Role::IS_MANAGER){
 //            throw new UnauthorizedException('You are not authorized to perform this action.');
             return response(['message' => 'You are not authorized to perform this action.'], 401);
         }
-        if( $request->header('client-platform') == 'mobile' && $user->role_id == Role::IS_EMPLOYEE){
+        if( $request->header('client-platform') == 'angular' && $user->role_id == Role::IS_EMPLOYEE){
 //            throw new UnauthorizedException('You are not authorized to perform this action.');
             return response(['message' => 'You are not authorized to perform this action.'], 401);
         }
