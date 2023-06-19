@@ -48,6 +48,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::resource('category', CategoryController::class);
     Route::resource('complain', ComplainController::class);
+    Route::get('user/employees', [UserController::class, 'employees']);
     Route::resource('user', UserController::class);
 
 
