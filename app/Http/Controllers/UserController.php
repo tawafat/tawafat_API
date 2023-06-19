@@ -19,9 +19,12 @@ class UserController extends Controller
 
     public function employees()
     {
-        return User::where('role_id', 3)->get()->toArray();
+        return User::where('role_id', Role::IS_EMPLOYEE)->get()->toArray();
     }
-
+    public function managers()
+    {
+        return User::where('role_id', Role::IS_MANAGER)->get()->toArray();
+    }
 
     public function show($id)
     {
