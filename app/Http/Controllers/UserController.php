@@ -14,6 +14,11 @@ class UserController extends Controller
 
     public function index()
     {
+        return User::all();
+    }
+
+    public function employees()
+    {
         return User::all()->where('role_id' , '=', 3);
     }
 
