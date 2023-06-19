@@ -19,7 +19,7 @@ class UserController extends Controller
 
     public function employees()
     {
-        return User::all()->where('role_id' , '=', 3);
+        return User::where('role_id', 3)->get()->toArray();
     }
 
 
