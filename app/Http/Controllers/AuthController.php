@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+
 
 class AuthController extends Controller
 {
@@ -68,9 +70,22 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
         $user = User::where('email', $fields['email'])->first();
+
         if (!$user || !Hash::check($fields['password'], $user->password)) {
+//            throw new UnauthorizedException('Invalid login credentials.');
             return response(['message' => 'bad credential'], 401);
         }
+
+        if( $request->header('client-platform') == 'angular' && $user->role_id == Role::IS_MANAGER){
+//            throw new UnauthorizedException('You are not authorized to perform this action.');
+            return response(['message' => 'You are not authorized to perform this action.'], 401);
+        }
+        if( $request->header('client-platform') == 'mobile' && $user->role_id == Role::IS_EMPLOYEE){
+//            throw new UnauthorizedException('You are not authorized to perform this action.');
+            return response(['message' => 'You are not authorized to perform this action.'], 401);
+        }
+
+
 
         $token = $user->createToken('portal')->plainTextToken;
 

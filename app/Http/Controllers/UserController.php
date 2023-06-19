@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Mailjet\LaravelMailjet\Facades\Mailjet;
+use Illuminate\Validation\ValidationException;
 use Mailjet\Resources;
 
 class UserController extends Controller
@@ -28,12 +30,25 @@ class UserController extends Controller
             'name' => 'required|string',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|confirmed',
+            'role_id' => 'required|exists:roles,id'
         ]);
+
+
+        if ($fields['role_id'] == 1 && $request->user()->role_id != Role::IS_ADMIN ) {
+            throw ValidationException::withMessages([
+                'role_id' => 'You do not have permission to perform this action.',
+            ]);
+        }
+
+
         $user = User::create([
             'name' => $fields['name'],
             'email' => $fields['email'],
-            'password' => bcrypt($fields['password'])
+            'password' => bcrypt($fields['password']),
+            'role_id' => $fields['role_id']
         ]);
+
+
         $token = $user->createToken('myAppToken')->plainTextToken;
 
         $response = [
@@ -42,28 +57,27 @@ class UserController extends Controller
         ];
 
 
-
         $body = [
             'FromEmail' => "hazem.xmotion@gmail.com",
             'FromName' => "Hazem Tawafat",
             'Subject' => "An account is been Created at Tawafat",
-            'Text-part' => "Welcome ".$fields['name'] .",
+            'Text-part' => "Welcome " . $fields['name'] . ",
              An account is been Created at Tawafat,
              your Credential is:
-             user: ".$fields['name'] ." , Password: ".$fields['password']."
+             user: " . $fields['name'] . " , Password: " . $fields['password'] . "
              ",
             'Html-part' => "
-                    <h3>Welcome ".$fields['name'] ."!</h3>
+                    <h3>Welcome " . $fields['name'] . "!</h3>
                     <br />An account is been Created at Tawafat,
                     <br /> your Credential is:
-                    <br />  user: ".$fields['name'] ."
-                    <br /> Password: ".$fields['password']."
+                    <br />  user: " . $fields['name'] . "
+                    <br /> Password: " . $fields['password'] . "
                     ",
 
 
-            'Recipients' => [['Email' =>  $fields['email']]]
+            'Recipients' => [['Email' => $fields['email']]]
         ];
-         Mailjet::post(Resources::$Email, ['body' => $body]);
+        Mailjet::post(Resources::$Email, ['body' => $body]);
 
         return response($response, 201);
     }
