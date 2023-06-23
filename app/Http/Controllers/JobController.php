@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\JobDetail;
-//use App\Notifications\JobCreated;
+use App\Models\User;
+use App\Notifications\JobCreated;
 use Exception;
 use Illuminate\Http\Request;
 use App\Models\Job;
@@ -127,8 +128,8 @@ class JobController extends Controller
             'location.long' => 'required',
             'location.lat' => 'required',
             // 'category_slug' => 'required',
-            'enable_gps' => 'required',
-            'enable_studio' => 'required',
+            'enable_gps' => 'nullable',
+            'enable_studio' => 'nullable',
             'type' => 'required'
         ]);
 
@@ -246,6 +247,22 @@ class JobController extends Controller
      */
     public function update(Request $request, $id)
     {
+/*        $request->validate([
+            'name' => 'required|max:25',
+            'description' => 'required',
+            'start_date' => 'required',
+            'end_date' => 'required',
+            'status' => 'required',
+//          'location_id' => 'required',
+            'location' => 'required',
+            'location.long' => 'required',
+            'location.lat' => 'required',
+            // 'category_slug' => 'required',
+            'enable_gps' => 'required',
+            'enable_studio' => 'required',
+            'type' => 'required'
+        ]);*/
+
         $user = $request->user();
         $job = Job::find($id);
         $job_before = $job->toArray();
@@ -265,6 +282,8 @@ class JobController extends Controller
         $log = dataLogController::createLog('Update a job', 'update', $job->getTable(), $id, $user, $metaData, $request);
         $job->logs()->save($log);
 
+//        \Notification::send($user, new JobCreated($log));
+
 
         return $job;
         //
@@ -280,6 +299,10 @@ class JobController extends Controller
         $job = Job::find($id);
         $job_before = $job->toArray();
         $job->updated_by_id = $user->id;
+        $assignedToUser = User::find($request->assigned_to_id);
+        if (isset($assignedToUser)){
+            abort(404, 'Could not create office or assign it to administrator');
+        }
         $job->assigned_to_id = $request->assigned_to_id;
 
         // save on the log
@@ -287,6 +310,7 @@ class JobController extends Controller
         $log = dataLogController::createLog('Assign a job to a user', 'update', $job->getTable(), $id, $user, $metaData, $request);
         $job->logs()->save($log);
 
+        \Notification::send($user, new JobCreated($log));
 
         return $job;
         //
